@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>翻牌遊戲</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 50px auto;
+    }
+
+
+    .card {
+      width:140px;
+      height: 140px;
+      margin: 5px;
+      border-radius: 10px;
+      background-color: #3498db;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.5s, box-shadow 0.3s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+      border-radius: 10px;
+      background-color: #2ecc71;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .flipped {
+      transform: rotateY(180deg);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+   
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+  </style>
+</head>}
+   
+
+<body>
+  <div class="container"></div>
+  
+  <div id="victory" class="hidden">
+    
+    <h1>恭喜你贏得了遊戲！</h1>
+    
+  </div>
+  <script>
+    const images = [
+      '4453_0.jpg',
+      '4454_0.jpg',
+      '4455_0.jpg',
+      '4456_0.jpg',
+      '4537_0.jpg',
+      '4538_0.jpg',
+      'S__1703939_0.jpg',
+      'S__1703941_0.jpg',
+      'S__1703942_0.jpg',
+      'S__1703948.jpg',
+      'S__1703949.jpg',
+      'S__1703950.jpg',
+      'S__1703952.jpg',
+      'S__1703953.jpg',
+      'S__1703954.jpg',
+      'S__1703955.jpg',
+      'S__1703956.jpg',
+      'S__1703958.jpg',
+      'S__1703959.jpg',
+      'S__1703961.jpg',
+      'S__1703963.jpg',
+      'S__1720325_0.jpg',
+      'S__1720327_0.jpg',
+
+    ];
+
+    const cards = images.concat(images).sort(() => Math.random() - 0.5);
+
+    const container = document.querySelector('.container');
+    let flippedCards = [];
+    let matchedPairs = 0;
+
+    cards.forEach(image => {
+      const card = document.createElement('div');
+      card.classList.add('card');
+
+      const front = document.createElement('div');
+      front.textContent = '🎴';
+      card.appendChild(front);
+
+      const back = document.createElement('div');
+      back.classList.add('back');
+      const img = document.createElement('img');
+      img.src = image;
+      back.appendChild(img);
+      card.appendChild(back);
+
+      card.addEventListener('click', () => {
+        if (!card.classList.contains('flipped') && flippedCards.length < 2) {
+          card.classList.add('flipped');
+          flippedCards.push(card);
+          if (flippedCards.length === 2) {
+            setTimeout(checkMatch, 1000);
+          }
+        }
+      });
+
+      container.appendChild(card);
+    });
+
+
+    // 檢查翻開的兩張卡片是否匹配
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+      // 如果兩張卡片的背面內容不相同
+      if (card1.querySelector('.back img').src !== card2.querySelector('.back img').src) {
+        // 延遲一秒後翻回去
+        setTimeout(() => {
+          flippedCards.forEach(card => {
+            card.classList.remove('flipped');
+          });
+          flippedCards = [];
+        }, 100);
+      } else {
+        // 如果匹配成功，增加匹配對數
+        matchedPairs++;
+        // 如果所有卡片都匹配成功，顯示勝利畫面
+        if (matchedPairs === images.length) {
+          document.getElementById('victory').classList.remove('hidden');
+          
+        }
+        flippedCards = [];
+      }
+    }
+  </script>
+ 
+</body>
+
+</html>
